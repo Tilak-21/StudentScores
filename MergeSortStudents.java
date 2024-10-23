@@ -1,54 +1,53 @@
 public class MergeSortStudents {
     private static Student[] temp;
 
-    public static void mergeSort(Student[] students, int left, int right) {
-        if (left < right) {
+    public static void mergeSort(Student[] students, int leftIndex, int rightIndex) {
+        if (leftIndex < rightIndex) {
             // Initialize the temp array only once for the entire sort process
             if (temp == null) {
                 temp = new Student[students.length];
             }
 
-            int mid = (left + right) / 2;
+            int middleIndex = (leftIndex + rightIndex) / 2;
 
             // Sort first and second halves
-            mergeSort(students, left, mid);
-            mergeSort(students, mid + 1, right);
+            mergeSort(students, leftIndex, middleIndex);
+            mergeSort(students, middleIndex + 1, rightIndex);
 
             // Merge the sorted halves
-            merge(students, left, mid, right);
+            merge(students, leftIndex, middleIndex, rightIndex);
         }
     }
 
-    public static void merge(Student[] students, int left,int mid, int right) {
-        int i = left;
-        int j = mid + 1;
-        int k = left;
+    private static void merge(Student[] students, int leftIndex, int middleIndex, int rightIndex) {
+        int leftPointer = leftIndex;       // Pointer for the left subarray
+        int rightPointer = middleIndex + 1; // Pointer for the right subarray
+        int mergedPointer = leftIndex;     // Pointer for the merged array
 
         // Copy data to temp arrays for merging
-        for (int index = left; index <= right; index++) {
+        for (int index = leftIndex; index <= rightIndex; index++) {
             temp[index] = students[index];
         }
 
         // Merge the two halves into the main array
-        while (i <= mid && j <= right) {
-            if (temp[i].score >= temp[j].score) {
-                students[k] = temp[i];
-                i++;
+        while (leftPointer <= middleIndex && rightPointer <= rightIndex) {
+            if (temp[leftPointer].score >= temp[rightPointer].score) {
+                students[mergedPointer] = temp[leftPointer];
+                leftPointer++;  // Move the leftPointer to the next element in the left subarray
             } else {
-                students[k] = temp[j];
-                j++;
+                students[mergedPointer] = temp[rightPointer];
+                rightPointer++; // Move the rightPointer to the next element in the right subarray
             }
-            k++;
+            mergedPointer++; // Move to the next position in the merged array
         }
 
-        // Copy the remaining elements of the left half, if any
-        while (i <= mid) {
-            students[k] = temp[i];
-            i++;
-            k++;
+        // Copy the remaining elements of the left subarray, if any
+        while (leftPointer <= middleIndex) {
+            students[mergedPointer] = temp[leftPointer];
+            leftPointer++;
+            mergedPointer++;
         }
 
-        // No need to copy the right half, since it's already in the correct place
+        // No need to copy the right subarray, as its elements are already in place
     }
-
 }
